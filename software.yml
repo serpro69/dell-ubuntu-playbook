@@ -1,0 +1,3 @@
+---
+# Playbook for installing and configuring software
+- hosts: all

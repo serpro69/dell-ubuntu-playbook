@@ -1,0 +1,5 @@
+---
+# Main playbook that runs everything
+- import_playbook: base.yml
+- import_playbook: software.yml
+- import_playbook: dotfiles.yml

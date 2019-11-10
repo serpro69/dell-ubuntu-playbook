@@ -1,0 +1,3 @@
+---
+# Playbook for configuring dotfiles
+- hosts: all

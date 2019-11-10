@@ -1,0 +1,3 @@
+---
+# Base configuration playbook. Should be run first after installing OS
+- hosts: all
