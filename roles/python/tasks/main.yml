@@ -1,0 +1,9 @@
+
+      # TODO move python related stuff to another role
+      - python-pip
+      - python3-gssapi
+      - python-jmespath
+      - python3.7
+      - python-apt #TODO --no-install-recommends
+      - ansible # TODO this should be installed with PIP
+      - python3-gpg

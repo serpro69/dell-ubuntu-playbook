@@ -1,0 +1,5 @@
+- name: Install guake
+  # get latest version
+  # clone respo
+  # checkout tag
+  # install
