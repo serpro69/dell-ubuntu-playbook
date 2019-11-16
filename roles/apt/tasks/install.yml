@@ -1,0 +1,133 @@
+# https://askubuntu.com/questions/463754/how-to-make-ttf-mscorefonts-installer-package-download-fonts-after-it-says-it-i
+# https://ubuntuforums.org/showthread.php?t=2349320
+- name: Fix ttf-mscorefonts-installer package
+  block:
+    apt:
+      - ttf-mscorefonts-installer
+      # first purge the package
+      # then install and accept the EULA
+
+- name: Install apt packages
+  apt:
+    name:
+      - keepassxc
+      - xclip
+      - stow
+      - rxvt-unicode
+      - zsh
+      - vim
+      - vim-nox
+      - vim-gnome
+      - vim-gtk
+      - gir1.2-gtop-2.0
+      - lm-sensors
+      - tmux
+      - cryptomator
+      - backintime-qt4
+      - pomodoro-indicator
+      - cpanminus
+      - npm
+      - flameshot
+      - recode
+      - qbittorrent
+      - jq
+      - vagrant
+      - virtualbox-6.0
+    state: present
+
+- name: Install libs
+  apt:
+    name:
+      - libevent-dev
+      - libncurses5-dev
+      - libcanberra-gtk-module
+      - libcanberra-gtk3-module
+      - libappindicator-dev
+    state: present
+
+    # TODO see if anything else is needed here
+    # TODO configure brave? restore backup settings?
+- name: Install brave browser
+  apt:
+    name:
+      - brave-keyring
+      - brave-browser
+    state: present
+
+    # TODO configure thunderbird? restore backup?
+- name: Install thunderbird
+  apt:
+    name:
+      - thunderbird
+      - thunderbird-locale-en-us
+      - thunderbird-gnome-support
+    state: present
+
+- name: Install network manager vpn packages for gnome desktop
+  apt:
+    name:
+      - network-manager-openvpn-gnome
+      - network-manager-openconnect-gnome
+    state: present
+
+    # TODO anything else needs to be done here?
+- name: Install java openjdk
+  block:
+  apt:
+    name:
+      - openjdk-8-jdk
+      - openjdk-8-jre
+      - openjdk-8-doc
+    state: present
+
+# This is needed for Davmail
+- name: Install openjfx 8u116
+  # TODO
+  # check if openjfx is present (print version?)
+  # if version == null or version > 8 purge and install
+  block:
+    - name: Get openjfx version
+      shell: apt-cache policy openjfx openjfx-source libopenjfx-java libopenjfx-jni
+      #TODO get versions
+
+    - name: Remove openjfx
+      apt:
+        name:
+          - openjfx
+          - openjfx-source
+          - libopenjfx-java
+          - libopenjfx-jni
+        state: absent
+        purge: yes
+      when: found_version != version
+
+    - name: Install openjfx
+      apt:
+        name:
+          - "openjfx={{ version }}"
+          - "openjfx-source={{ version }}"
+          - "libopenjfx-java={{ version }}"
+          - "libopenjfx-jni={{ version }}"
+      state: present
+
+    - name: Hold back openjfx packages
+      shell: sudo apt-mark hold openjfx openjfx-source libopenjfx-java libopenjfx-jni
+  vars:
+    version: 8u161-b12-1ubuntu2
+
+- name: Install php7
+  apt:
+    name:
+      - "php{{ version }}""
+      - "php{{ version }}-curl"
+      - "php{{ version }}-xml"
+    state: present
+  vars:
+    version: 7.2
+
+- name: Install Docker
+  apt:
+    name:
+      - docker-ce
+      - docker-compose
+    state: present

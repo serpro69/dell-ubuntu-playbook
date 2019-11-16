@@ -1,0 +1,70 @@
+- name: Remove gnome shell extensions
+  block:
+    - name: Remove gnome shell extensions with apt
+      apt:
+        name:
+          - "{{ base_name }}-appindicator"
+          - "{{ base_name }}-top-icons-plus"
+        purge: true # TODO
+      vars:
+        base_name: gnome-shell-extension
+
+    # TODO
+    - name: Remove gnome shell extensions directories
+      # TODO both ~/.local and /usr/share
+      shell:
+
+- name: Install gnome tweaks
+  apt:
+    name: gnome-tweaks
+    state: present
+
+- name: Install gnome shell extensions with apt
+  apt:
+    name:
+      - "{{ base_name }}s"
+      - "{{ base_name }}-dashtodock"
+      - "{{ base_name }}-hide-activities"
+      - "{{ base_name }}-no-annoyance"
+      - "{{ base_name }}-remove-dropdown-arrows"
+      - "{{ base_name }}-ubuntu-dock"
+    state: present
+  vars:
+    base_name: gnome-shell-extension
+
+# TODO
+- name: Install the rest of gnome shell extensions
+  block:
+    # ~/.local/share/gnome-shell/extensions
+    - name: alternate-tab@gnome-shell-extensions.gcampax.github.com
+    - name: appindicatorsupport@rgcjonas.gmail.com
+    - name: apps-menu@gnome-shell-extensions.gcampax.github.com
+    - name: auto-move-windows@gnome-shell-extensions.gcampax.github.com
+    - name: cpupower@mko-sl.de
+    - name: drive-menu@gnome-shell-extensions.gcampax.github.com
+    - name: extensions@abteil.org
+    - name: launch-new-instance@gnome-shell-extensions.gcampax.github.com
+    - name: minimizeall@scharlessantos.org
+    - name: native-window-placement@gnome-shell-extensions.gcampax.github.com
+    - name: openweather-extension@jenslody.de
+    - name: places-menu@gnome-shell-extensions.gcampax.github.com
+    - name: update-extensions@franglais125.gmail.com
+    - name: user-theme@gnome-shell-extensions.gcampax.github.com
+    - name: Vitals@CoreCoding.com
+    # /usr/share/gnome-shell/extensions
+    - name: windowsNavigator@gnome-shell-extensions.gcampax.github.com
+    - name: alternate-tab@gnome-shell-extensions.gcampax.github.com
+    - name: apps-menu@gnome-shell-extensions.gcampax.github.com
+    - name: auto-move-windows@gnome-shell-extensions.gcampax.github.com
+    - name: drive-menu@gnome-shell-extensions.gcampax.github.com
+    - name: launch-new-instance@gnome-shell-extensions.gcampax.github.com
+    - name: native-window-placement@gnome-shell-extensions.gcampax.github.com
+    - name: places-menu@gnome-shell-extensions.gcampax.github.com
+    - name: user-theme@gnome-shell-extensions.gcampax.github.com
+    - name: window-list@gnome-shell-extensions.gcampax.github.com.bak
+    - name: windowsNavigator@gnome-shell-extensions.gcampax.github.com
+
+- name: Install gnome shell apps
+  apt:
+    name:
+      - chrome-gnome-shell

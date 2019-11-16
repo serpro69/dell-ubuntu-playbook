@@ -1,0 +1,3 @@
+# Runs all tasks for this role
+- import: remove.yml
+- import: install.yml

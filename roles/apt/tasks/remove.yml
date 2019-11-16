@@ -1,0 +1,4 @@
+- name: Remove apt packages
+  apt:
+    name:
+      - dnsmasq-base
