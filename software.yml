@@ -1,3 +1,8 @@
 ---
 # Playbook for installing and configuring software
 - hosts: all
+  gather_facts: yes
+
+  - include_role: apt
+  - include_role: gnome_shell
+  - include_role: packages
