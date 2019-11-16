@@ -1,3 +1,89 @@
 ---
-# Base configuration playbook. Should be run first after installing OS
-- hosts: all
+# Base configuration playbook.
+# Should be run first after installing the OS
+- hosts: private
+  vars:
+    y: 1
+    n: 2
+
+  pre_tasks:
+    - name: Install aptitude
+      apt:
+        update_cache: yes
+        pkg: aptitude
+        state: present
+      become: yes
+
+    - name: Install basic software packages
+      apt:
+        update_cache: yes
+        pkg:
+          - software-properties-common
+          - build-essential
+          - checkinstall
+          - wget
+          - curl
+          - git
+          - cmake
+          - automake
+          - make
+          - gdebi
+          - libssl-dev
+          - xdotool
+          - apt-transport-https
+          - ca-certificates
+          - python3
+          - python3-pip
+        state: present
+      become: yes
+
+    # Needed for ansible expect module
+    - name: Install pexpect
+      pip:
+        name: pexpect
+        executable: pip3
+      become: yes
+
+  tasks:
+    - name: Copy tweaks script to /tmp
+      shell: "wget -O /tmp/tweaks.sh https://raw.githubusercontent.com/serpro69/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh"
+
+    - name: Run Dell-Ubuntu-Tweaks script
+      expect:
+        command: /bin/bash /tmp/tweaks.sh
+        responses:
+          '(.*)Do you wish to enable PRIME Offloading on the NVIDIA GPU(.*)': '{{ n }}'
+          '(.*)Do you wish to fix the headphone white noise on battery bug(.*)': '{{ y }}'
+          '(.*)Do you wish to install video codecs for encoding and playing videos(.*)': '{{ y }}'
+          '(.*)Do you wish to enable high quality audio(.*)': '{{ y }}'
+          '(.*)Do you wish to disable SPECTRE/Meltdown patches for performance(.*)': '{{ y }}'
+          '(.*)Do you wish to disable GNOME tracker(.*)': '{{ y }}'
+          '(.*)Do you wish to disable the fingerprint reader to save power(.*)': '{{ y }}'
+      become: yes
+
+    - name: Reboot after applying tweaks
+      reboot:
+        msg: Rebooting after applying Ubuntu tweaks
+
+    - name: Check which graphics driver is used
+      shell: "prime-select query"
+      register: prime_query
+
+    - name: Switch to prime graphics to intel
+      shell: "prime-select intel"
+      when: prime_query != intel
+
+    - name: Reboot after switching prime graphics
+      reboot:
+        msg: Rebooting after setting prime to intel
+      when: prime_query != intel
+
+
+    # https://askubuntu.com/questions/1032476/ubuntu-18-04-no-dns-resolution-when-connected-to-openvpn
+    # - name: Fix DNS resolution when connected to OpenVPN
+    # install https://github.com/jonathanio/update-systemd-resolved
+    # enable stub resolver https://github.com/jonathanio/update-systemd-resolved#stub-resolver
+
+    # This is a manual step
+    # OpenVPN configuration: https://github.com/jonathanio/update-systemd-resolved#openvpn-configuration
+    # Added as first line
