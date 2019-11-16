@@ -1,1 +1,4 @@
-.vagrant
+.vagrant/
+*.log
+.env
+insecure_private_key
